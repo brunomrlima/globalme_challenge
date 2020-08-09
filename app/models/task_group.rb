@@ -22,11 +22,11 @@ class TaskGroup < ApplicationRecord
 
   def self.return_group_users(n_users)
     final_paramters = TaskGroup.parameters(n_users)
-    group_ids = []
+    users = []
     final_paramters.each do |attributes|
-      group_ids << User.where(attributes[0]).random_records(attributes[1]).pluck(:id)
+      users += [User.where(attributes[0]).random_records(attributes[1], loop_limit: 30)]
     end
-    group_ids
+    users
   end
 
   private

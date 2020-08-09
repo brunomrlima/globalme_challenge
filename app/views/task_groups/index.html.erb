@@ -1,0 +1,18 @@
+<div>
+  <% @messages.each do |message| %>
+    <br />
+    <%= message %>
+  <% end %>
+</div>
+
+<h1>Users</h1>
+<h4>Total users: <%= @users_array.inject(0){|sum, arr| sum + arr.count} %></h4>
+<div>
+  <% @users_array.each do |user_array| %>
+    <b><%= user_array.count %></b> <br />
+    <% user_array.each do |user| %>
+      <%= user.name %>, <%= user.email %>, <%= user.gender %>, <%= user.age %>, <%= user.nationality %> <br />
+    <% end %>
+    <br />
+  <% end %>
+</div>

@@ -9,6 +9,6 @@
 #
 
 TaskGroup.parameters(1).each do |params|
-  30.times{User.create(params[0].merge({name: Faker::Name.unique.name, email: Faker::Internet.unique.email}))}
+  100.times{User.create(params[0].merge({name: Faker::Name.unique.name, email: Faker::Internet.unique.email}))}
 end
 
