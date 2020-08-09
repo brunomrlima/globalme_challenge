@@ -11,8 +11,8 @@ FactoryBot.define do
       gender { "Male" }
     end
 
-    trait :child do
-      age { "Child" }
+    trait :children do
+      age { "Children" }
     end
 
     trait :adult do
