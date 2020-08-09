@@ -34,5 +34,14 @@ FactoryBot.define do
     trait :japanese do
       nationality { "Japanese" }
     end
+
+    factory :user_with_tasks do
+      transient do
+        task_group_count { 2 }
+      end
+      after(:create) do |user, evaluator|
+        create_list(:task_group, evaluator.task_group_count, user: user)
+      end
+    end
   end
 end
