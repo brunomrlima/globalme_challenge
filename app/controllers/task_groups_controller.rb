@@ -1,4 +1,5 @@
 class TaskGroupsController < ApplicationController
+  skip_forgery_protection
   def index
     @messages = TaskGroup.return_group_information(100)
     @users_array = TaskGroup.return_group_users(100)
