@@ -9,22 +9,19 @@ class TaskGroup < ApplicationRecord
   }
 
   def self.return_group_information(n_users)
+    parameters = TaskGroup.parameters(n_users)
     messages = []
     messages << "Total users input: #{n_users}"
-    final_parameters = TaskGroup.parameters(n_users)
-    messages << "Total users output: #{final_parameters.inject(0){ |n, arr| n+arr[1] }}"
-    messages << "In this case, the output would be #{final_parameters.count} ​task groups​, such as:"
-    final_parameters.each do |final_params|
-      messages << "Task group of #{final_params[1]} users who are #{final_params[0].values.join(", ")}"
-    end
-    messages
+    messages << "Total users output: #{parameters.inject(0){ |n, arr| n+arr[1] }}"
+    messages << "In this case, the output would be #{parameters.count} ​task groups​, such as:"
+    parameters.inject(messages){|arr, args| arr << "Task group of #{args[1]} users who are #{args[0].values.join(", ")}" }
   end
 
   def self.return_group_users(n_users)
-    final_paramters = TaskGroup.parameters(n_users)
+    parameters = TaskGroup.parameters(n_users)
     users = []
-    final_paramters.each do |attributes|
-      users += [User.where(attributes[0]).random_records(attributes[1], loop_limit: 30)] if User.where(attributes[0]).present?
+    parameters.each do |args|
+      users += [User.where(args[0]).random_records(args[1], loop_limit: 30)] if User.where(args[0]).present?
     end
     users
   end
@@ -32,32 +29,40 @@ class TaskGroup < ApplicationRecord
   private
 
     def self.parameters(n_users)
-      main_parameters = TaskGroup.group_definer
+      main_parameters = TaskGroup.query_arguments
       user_number = TaskGroup.number_of_user_per_group(n_users)
-      main_parameters.zip(user_number)
+      main_parameters.zip(user_number) # Ex: => => [[{:gender=>"Male", :age=>"Adult", :nationality=>"English"}, 8], ...
     end
 
-    def self.group_definer
-      main_keys = TaskGroup::HASH_VARIABLES.keys
-      main_values = TaskGroup::HASH_VARIABLES.values.inject([]){|arr, nested_hash| arr << nested_hash.keys}
-      first, *rest = main_values
-      result = first.product(*rest)
-      result.map{ |arr| main_keys.zip(arr).to_h }
+    def self.query_arguments
+      main_keys = TaskGroup::HASH_VARIABLES.keys # Ex: => [:gender, :age, :nationality]
+      main_values = TaskGroup::HASH_VARIABLES.values.inject([]){|arr, nested_hash| arr << nested_hash.keys} # Ex: => [["Male", "Female"], ["Adult", "Children"], ["English", "French", "Indian", "Japanese"]]
+      first, *rest = main_values # => Ex: [["Male", "Female"], ["Adult", "Children"], ["English", "French", "Indian", "Japanese"]]
+      result = first.product(*rest) # => Ex: [[0.5, 0.6, 0.25], [0.5, 0.6, 0.25], [0.5, 0.6, 0.25], ...
+      result.map{ |arr| main_keys.zip(arr).to_h } # Ex: => [{:gender=>"Male", :age=>"Adult", :nationality=>"English"}, {:gender=>"Male", :age=>"Adult", :nationality=>"French"}...
     end
 
     def self.number_of_user_per_group(n_users)
-      first, *rest =  TaskGroup::HASH_VARIABLES.values.map{ |hash| hash.values }  # Ex => [[0.5, 0.5], [0.6, 0.4], [0.25, 0.25, 0.25, 0.25]]
-      first.product(*rest).map{|result| (result.inject(:*)*n_users).ceil}         # Ex => [8, 8, 8, 8, 5, 5, 5, 5, 8, 8, 8, 8, 5, 5, 5, 5]
-
+      first, *rest =  TaskGroup::HASH_VARIABLES.values.map{ |hash| hash.values }  # Ex: => [[0.5, 0.5], [0.6, 0.4], [0.25, 0.25, 0.25, 0.25]]
+      first.product(*rest).map{|result| (result.inject(:*)*n_users).ceil}         # Ex: => [8, 8, 8, 8, 5, 5, 5, 5, 8, 8, 8, 8, 5, 5, 5, 5]
     end
-
-    # def self.count_groups(hash, results = 1)
-    #   hash.each do |_, value|
-    #     if value.is_a?(Hash)
-    #       results *= value.length
-    #       count_groups(value, results)
-    #     end
-    #   end
-    #   results
-    # end
 end
+
+
+
+
+
+
+
+
+
+
+# def self.count_groups(hash, results = 1)
+#   hash.each do |_, value|
+#     if value.is_a?(Hash)
+#       results *= value.length
+#       count_groups(value, results)
+#     end
+#   end
+#   results
+# end
