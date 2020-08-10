@@ -1,5 +1,5 @@
 <%= form_for :variables, :url => { :action => "update_variables", controller: 'task_groups'}, remote: true do |f| %>
-  <%= f.number_field :n_user %>
+  <%= f.number_field :n_user, value: 100 %>
   <%= f.submit "Update Variables" %>
 <% end %>
 

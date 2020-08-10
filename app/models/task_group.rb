@@ -33,7 +33,7 @@ class TaskGroup < ApplicationRecord
 
     def self.parameters(n_users)
       main_parameters = TaskGroup.group_definer
-      user_number = TaskGroup.group_divider(n_users)
+      user_number = TaskGroup.number_of_user_per_group(n_users)
       main_parameters.zip(user_number)
     end
 
@@ -45,9 +45,10 @@ class TaskGroup < ApplicationRecord
       result.map{ |arr| main_keys.zip(arr).to_h }
     end
 
-    def self.group_divider(n_users)
-      first, *rest =  TaskGroup::HASH_VARIABLES.values.map{ |hash| hash.values }
-      first.product(*rest).map{|result| (result.inject(:*)*n_users).ceil}
+    def self.number_of_user_per_group(n_users)
+      first, *rest =  TaskGroup::HASH_VARIABLES.values.map{ |hash| hash.values }  # Ex => [[0.5, 0.5], [0.6, 0.4], [0.25, 0.25, 0.25, 0.25]]
+      first.product(*rest).map{|result| (result.inject(:*)*n_users).ceil}         # Ex => [8, 8, 8, 8, 5, 5, 5, 5, 8, 8, 8, 8, 5, 5, 5, 5]
+
     end
 
     # def self.count_groups(hash, results = 1)
