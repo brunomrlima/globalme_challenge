@@ -24,7 +24,7 @@ class TaskGroup < ApplicationRecord
     final_paramters = TaskGroup.parameters(n_users)
     users = []
     final_paramters.each do |attributes|
-      users += [User.where(attributes[0]).random_records(attributes[1], loop_limit: 30)]
+      users += [User.where(attributes[0]).random_records(attributes[1], loop_limit: 30)] if User.where(attributes[0]).present?
     end
     users
   end
