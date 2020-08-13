@@ -8,9 +8,15 @@ You are free to implement this test on an IDE in your machine or online. During 
 1. share your screen
 2. run the code on the below example as a sample test
 3. explain your choices of data structures and algorithms
+
 There will be another live coding question during the interview, so please have your IDE ready for that as well.
+
 If you have any questions or concerns, please let us know.
-Good luck! ------------------
+
+Good luck!
+ 
+------------------
+
 Our crowdsourcing app distributes different types of tasks (speech recording, image annotation, audio transcription, etc) to our user base, based on their user profile details.
 
 In this case, you are tasked with writing our task distribution algorithm in ​Ruby​.
